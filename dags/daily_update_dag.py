@@ -57,17 +57,19 @@ def fetch_mongo_to_gc_storage(**kwargs):
     col = db.get_collection('games_rating')
     
     projection = {'_id': False, 'summary': False, 'verified': False, 'reviewText': False, 'reviewTime': False }
-    # result = col.find({'unixReviewTime': {'$lt': int(six_mounth_ago_unix.timestamp())}}, projection)
-    result = col.find_one({})
-    json_data = json.dumps(result)
+    result = col.find({'unixReviewTime': {'$lt': int(six_mounth_ago_unix.timestamp())}}, projection)
+    
+    json_data = json.dumps(list(result))
 
     with open(str(six_mounth_ago_unix) + '.json', 'w') as file: 
         json.dump(json_data, file)
 
+    """
     # save into json 
     storage.blob._MAX_MULTIPART_SIZE = 5 * 1024 * 1024  # 5 MB
     storage.blob._DEFAULT_CHUNKSIZE = 5 * 1024 * 1024  # 5 MB
-
+    """
+    
     client = storage.Client()
     bucket = client.bucket(kwargs['bucket'])
 

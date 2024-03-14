@@ -98,7 +98,7 @@ def pd_df_processing(df):
 
 
 
-def fetch_mongo_to_gc_storage(**kwargs):
+def fetch_mongo_to_gc_storage_fl(**kwargs):
 
     six_mounth_ago_unix = kwargs['logical_date']
 
@@ -108,25 +108,27 @@ def fetch_mongo_to_gc_storage(**kwargs):
     
     projection = {'_id': False, 'summary': False, 'verified': False, 'reviewText': False, 'reviewTime': False }
     result = col.find({'unixReviewTime': {'$lt': int(six_mounth_ago_unix.timestamp())}}, projection)
-    # result = col.find({"reviewerID":"A1INA0F5CWW3J4"}, projection)
+    
     
     json_data = json.dumps(list(result))
     
     # creation du fichier a partir du gc storage dans temp dir 
     # with tempfile.TemporaryDirectory() as temp_dir:
+    
     file_path = str(six_mounth_ago_unix) + '.json'
     print(file_path)
     with open(file_path, 'w') as file: 
         json.dump(json_data, file)
     # save into json 
+    
     storage.blob._MAX_MULTIPART_SIZE = 5 * 1024 * 1024  # 5 MB
     storage.blob._DEFAULT_CHUNKSIZE = 5 * 1024 * 1024  # 5 MB
-
+    
     client = storage.Client()
     bucket = client.bucket(kwargs['bucket'])
 
-    blob = bucket.blob(str(six_mounth_ago_unix) + '.json')  # name of the object in the bucket 
-    blob.upload_from_filename(file_path)
+    blob = bucket.blob(file_path)  # name of the object in the bucket 
+    blob.upload_from_filename(file_path, chunk_size=storage.blob._DEFAULT_CHUNKSIZE)
         
     bucket_file = kwargs['bucket']
     kwargs['ti'].xcom_push(key='bucket', value=bucket_file)
@@ -177,7 +179,7 @@ with dag:
 
     fetch_mongo_gc_storage_task = PythonOperator(
         task_id='fetch_mongo_gcstorage_task',
-        python_callable=fetch_mongo_to_gc_storage, 
+        python_callable=fetch_mongo_to_gc_storage_fl, 
         op_kwargs={
             "bucket": BUCKET,
         },
