@@ -3,7 +3,7 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
 from airflow import DAG
-from utils import load_mongo_client, six_month_ago
+from first_load_dag import load_mongo_client, six_month_ago
 from google.cloud import storage
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
 
@@ -26,7 +26,7 @@ def connect_to_mongo():
 
     list_result = list(result)
     print(len(list_result))
-    print(list_result)
+    print(list_result[:2])
 
 def upload_to_gcs(bucket, object_name):
     

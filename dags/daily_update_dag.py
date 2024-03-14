@@ -8,7 +8,7 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
 from airflow import DAG
-from utils import load_mongo_client, six_month_ago
+from first_load_dag import load_mongo_client, six_month_ago
 from google.cloud import storage
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
 from pandas_gbq import to_gbq
@@ -57,8 +57,9 @@ def fetch_mongo_to_gc_storage(**kwargs):
     col = db.get_collection('games_rating')
     
     projection = {'_id': False, 'summary': False, 'verified': False, 'reviewText': False, 'reviewTime': False }
-    result = col.find({'unixReviewTime': {'$lt': int(six_mounth_ago_unix.timestamp())}}, projection)
-    json_data = json.dumps(list(result))
+    # result = col.find({'unixReviewTime': {'$lt': int(six_mounth_ago_unix.timestamp())}}, projection)
+    result = col.find_one({})
+    json_data = json.dumps(result)
 
     with open(str(six_mounth_ago_unix) + '.json', 'w') as file: 
         json.dump(json_data, file)
@@ -119,8 +120,7 @@ def pd_to_gbq(**kwargs):
 dag = DAG(
     'dail_update_dag',
     # start_date=days_ago(0),
-    schedule_interval='0 0 * * *',
-    start_date='2024-03-10', 
+    # schedule_interval='0 0 * * *', 
     catchup=False
 )
 
