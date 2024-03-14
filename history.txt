@@ -1,0 +1,326 @@
+    1  sudo apt update 
+    2  sudo apt install docker.io
+    3  sudo groupadd docker
+    4  sudo usermod -aG docker sudo 
+    5  sudo usermod -aG docker 
+    6  sudo usermod -aG docker mame
+    7  docker run hello-world
+    8  echo $USER
+    9  docker run hello-wordl
+   10  docker run hello-world
+   11  wget https://github.com/docker/compose/releases/download/v2.24.1/docker-compose-linux-x86_64 -O docker-compose 
+   12  chmod +x docker-compose
+   13  mv docker-compose /bin/docker-compose
+   14  echo PATH="$HOME/bin:$PATH" >> .bashrc
+   15  mkdir airflow_project
+   16  cd airflow_project
+   17  curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.8.1/docker-compose.yaml'
+   18  docker-compose 
+   19  source .bashrc
+   20  cd ..
+   21  source .bashrc
+   22  docker-compose
+   23  exit
+   24  docker-compos
+   25  docker-compose
+   26  ./bin/docker-compose
+   27  cd /bin
+   28  ls
+   29  cd ..
+   30  ls 
+   31  cd /home
+   32  ls
+   33  cd mame
+   34  ls 
+   35  sudo mv docker-compose /bin/docker-compose
+   36  docker-compose 
+   37  cd /home/mame/airflow_project
+   38  docker-compose up -d
+   39  docker ps
+   40  docker ps 
+   41  cd ..
+   42  ls 
+   43  ls -la 
+   44  cd airflow_project
+   45  ls -la 
+   46  sudo chown mame dags config logs plugins 
+   47  docker ps 
+   48  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq) 
+   49  docker ps
+   50  docker-compose up -d
+   51  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq) 
+   52  export AIRFLOW_UID=5000
+   53  docker-compose up -d
+   54  docker ps
+   55  ls -la 
+   56  chmod 777 dags 
+   57  sudo chmod 777 dags 
+   58  ls 
+   59  ls -la 
+   60  sudo chmod 777 logs 
+   61  echo $USER
+   62  cd ..
+   63  chmod 777 airflow_project
+   64  ls 
+   65  ls -la 
+   66  cd airflow_projec
+   67  cd airflow_project
+   68  sudo chown mame:mame dags
+   69  ls -la 
+   70  history
+   71  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq)
+   72  exit
+   73  sudo nano /dags/my_dag.py
+   74  ls -la 
+   75  echo $USER
+   76  cd dags 
+   77  ls 
+   78  sudo nano my_dag.py
+   79  ls 
+   80  cat my_dag.py
+   81  docker-compose up -d
+   82  *docker ps
+   83  docker ps
+   84  sudo nano my_dag.py
+   85  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq)
+   86  docker-compose up -d
+   87  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq)
+   88  export AIRFLOW_UID=5000
+   89  docker-compose up -d
+   90  ls -la 
+   91  chown mame my_dag.py
+   92  sudo chown mame my_dag.py
+   93  exit 
+   94  docker ps 
+   95  docker exec -it 12802343de7e bash
+   96  docker kill $(docker ps -q) && docker rmi $(docker images -aq) 
+   97  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq) 
+   98  docker rmi -f $(docker images -aq) 
+   99  docker-compose up -d 
+  100  docker ps
+  101  docker images 
+  102  docker rmi -f $(docker images -aq) 
+  103  docker images 
+  104  export AIRFLOW_UID=5000
+  105  docker-compose up -d 
+  106  docker ps
+  107  docker exec -it 63eed85fa7c5 bash
+  108  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq) 
+  109  export AIRFLOW_UID=5000
+  110  docker-compose up -d 
+  111  docker ps
+  112  docker exec -it 12802343de7e bash 
+  113  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq) 
+  114  docker images -aq
+  115  docker-compose up -d 
+  116  docker ps
+  117  docker exec -it 12802343de7e bash 
+  118  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq) 
+  119  nano Dockerfile
+  120  su - mame
+  121  $USER 
+  122  echo $USER 
+  123  exit 
+  124  docker ps
+  125  ls -la 
+  126  sudo chown mame dags -r 
+  127  sudo chown mame -r dags  
+  128  sudo chown mame dags --help 
+  129  sudo chown mame /dags  
+  130  sudo chown mame dags  
+  131  ls -la 
+  132  cd dags 
+  133  ls -la 
+  134  sudo chown mame my_dag.py  
+  135  export AIRFLOW_UID=5000
+  136  cd ..
+  137  docker-compose up -d
+  138  docker ps
+  139  sudo chown mame my_dag.py  
+  140  sudo chown mame dags  
+  141  sudo chown mame dags/my_dag.py  
+  142  history > history.txt
+  143  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq)
+  144  docker images -aq 
+  145  exit 
+  146  cat Dockerfile
+  147  export AIRFLOW_UID=5000
+  148  cat Dockerfile
+  149  docker-compose up -d
+  150  docker ps
+  151  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq)
+  152  docker-compose up --force-recreate -d
+  153  docker ps 
+  154  docker exec -it 59e182ef536b bash && pip list 
+  155  docker-compose down 
+  156  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq)
+  157  docker rmi -f $(docker images -aq)
+  158  docker-compose up --build -d
+  159  export AIRFLOW_UID=5000
+  160  docker-compose up --build -d
+  161  docker ps 
+  162  docker exec -it 99d4f2d88e4a bash 
+  163  sudo chown mame dags &&  sudo chown mame dags/my_dag.py
+  164  history >> history.txt
+  165  docker-compose down 
+  166  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq)
+  167  docker rmi -f $(docker images -aq)
+  168  export AIRFLOW_UID=5000
+  169  docker-compose up --build -d
+  170  sudo chown mame dags &&  sudo chown mame dags/my_dag.py
+  171  docker-compose down 
+  172  docker kill $(docker ps -q) && docker rmi -f $(docker images -aq)
+  173  docker rmi -f $(docker images -aq)
+  174  export AIRFLOW_UID=5000
+  175  docker-compose up --build -d
+  176  sudo chown mame dags &&  sudo chown mame dags/my_dag.py
+  177  docker-compose down 
+  178  export AIRFLOW_UID=5000
+  179  docker rmi -f $(docker images -aq)
+  180  docker-compose up --build -d
+  181  sudo chown mame dags &&  sudo chown mame dags/my_dag.py
+  182  nslooku
+  183  nslookup
+  184  di
+  185  dig
+  186  docker ps 
+  187  docker exec -it 2c5655a38926 bash 
+  188  docker ps
+  189  docker inspect -f
+  190  docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps)
+  191  docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 
+  192  docker ps
+  193  docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 2c5655a38926
+  194  history
+  195  curl cluster0.oiowsz6.mongodb.net
+  196  ping cluster0.oiowsz6.mongodb.net
+  197  ping cluster0.oiowsz6.mongodb.net:27017
+  198  curl cluster0.oiowsz6.mongodb.net:27017
+  199  curl cluster0.oiowsz6.mongodb.net
+  200  apt install nslookup
+  201  sudo apt install nslookup
+  202  sudo apt install dnsutils
+  203  nslookup cluster0.oiowsz6.mongodb.net
+  204  nslookup cluster0.oiowsz6.mongodb.net:27017
+  205  curl ifconfig.co
+  206  docker ps
+  207  docker exec -it 2c5655a38926 bash
+  208  exit
+  209  curl cluster0.oiowsz6.mongodb.net
+  210  ping 
+  211  ping cluster0.oiowsz6.mongodb.net
+  212  telnet
+  213  sudo apt install telnet
+  214  telnet cluster0.oiowsz6.mongodb.net
+  215  telnet google.cpù
+  216  telnet google.com
+  217  telnet cluster0.oiowsz6.mongodb.net:27017
+  218  docker exec -it 2c5655a38926 bash
+  219  docker rmi -f $(docker images -aq)
+  220  docker-compose up --build -d
+  221  docker rmi -f $(docker images -aq)
+  222  docker compose down 
+  223  export AIRFLOW_UID=5000
+  224  docker-compose up --build -d
+  225  sudo chown mame dags &&  sudo chown mame dags/my_dag.py
+  226  docker compose down 
+  227  docker-compose down 
+  228  docker rmi -f $(docker images -aq)
+  229  docker-compose up --build -d
+  230  sudo chown -R mame .
+  231  ls -la 
+  232  cd dags 
+  233  ls -la
+  234  cd ..
+  235  cd .. && sudo chown -R mame .
+  236  docker-compose down 
+  237  cd airflow_project
+  238  docker-compose down 
+  239  docker rmi -f $(docker images -aq)
+  240  docker-compose up --build -d
+  241  docker-compose down 
+  242  docker rmi -f $(docker images -aq)
+  243  export AIRFLOW_UID=5000
+  244  docker-compose up --build -d
+  245  cd .. && sudo chown -R mame .
+  246  ls 
+  247  cd airflow_project 
+  248  apt install git 
+  249  sudo apt install git 
+  250  git login 
+  251  git init
+  252  git login
+  253  git log
+  254  git config --global user.email "n.boudier.ph@gmail.com"
+  255  git add .
+  256  git commit -m "ok "
+  257  cd .. && sudo chown -R mame .
+  258  cd ~/.ssh
+  259  ssh-keygen -t ed25519 -C "n.boudier.ph@gmail.com"
+  260  ls 
+  261  touch config
+  262  eval "$(ssh-agent -s)"
+  263  ssh-add ~/.ssh/id_ed25519
+  264  nano config
+  265  ssh -T git@github.com
+  266  ls 
+  267  cat id_ed25519.pub
+  268  ssh -T git@github.com
+  269  cd /home/mame/airflow_project
+  270  nano .gitignore 
+  271  git add .
+  272  git commit -m "ok "
+  273  git remote add origin https://github.com/Stupnikjs/airflow_pipeline.git
+  274  git branch main 
+  275  git push origin main 
+  276  git add .
+  277  git commit -m" ok" 
+  278  git push origin master 
+  279  git add .
+  280  git commit -m "ok "
+  281  git push origin master
+  282  git add .
+  283  git commit -m "ok "
+  284  git push origin master
+  285  docker ps
+  286  docker-compose down 
+  287  docker rmi -f $(docker images -aq)
+  288  docker-compose up --build -d
+  289  docker rmi -f $(docker images -aq)
+  290  docker-compose down 
+  291  export AIRFLOW_UID=5000
+  292  docker-compose up --build -d
+  293  cd .. && sudo chown -R mame
+  294  cd .. && sudo chown mame -R
+  295  cd .. && sudo chown mame -R airflow_project
+  296  cd /home/mame && sudo chown mame -R airflow_project
+  297  docker-compose down 
+  298  cd /home/mame/airflow_project
+  299  docker-compose down 
+  300  docker rmi -f $(docker images -aq)
+  301  docker-compose up --build -d
+  302  cd /home/mame && sudo chown mame -R airflow_project
+  303  git add .
+  304  cd /home/mame/airflow_project
+  305  git add .
+  306  git commit -m "ok "
+  307  git push origin master
+  308  git add .gitignore 
+  309  git commit -m "ignore"
+  310  git add .
+  311  git commit -m" o"
+  312  git add .
+  313  git commit -m "ok "
+  314  git push origin master
+  315  git add .
+  316  git commit -m" o "
+  317  git add .
+  318  git commit -m "ok "
+  319  git add .
+  320  git commit -m "ok "
+  321  docker ps
+  322  ls -la 
+  323  docker-compose down 
+  324  docker rmi -f $(docker images -aq)
+  325  export AIRFLOW_UID=5000 && docker-compose up --build -d
+  326  history >> history.txt
