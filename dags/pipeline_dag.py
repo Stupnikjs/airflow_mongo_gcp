@@ -1,8 +1,6 @@
-import pendulum
 import datetime
 import os
 import json
-import calendar
 import pandas as pd 
 import google.auth
 from airflow.operators.bash import BashOperator
@@ -26,7 +24,7 @@ BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'datalake.video_games')
 
 
 
-def connect_to_mongo(**kwargs):
+def fetch_mongo_to_gc_storage(**kwargs):
 
     six_mounth_ago_unix = kwargs['logical_date']
     print(six_mounth_ago_unix.timestamp())
@@ -35,13 +33,35 @@ def connect_to_mongo(**kwargs):
     db = client.get_database('Cluster0')
     col = db.get_collection('games_rating')
     
+    projection = {'_id': False}
+    result = col.find({'unixReviewTime': {'$lt': int(six_mounth_ago_unix.timestamp())}}, projection)
+    json_data = json.dumps(list(result))
 
-    result = col.find({'unixReviewTime': {'$lt': int(six_mounth_ago_unix.timestamp())}})
+    with open(str(six_mounth_ago_unix) + '.json', 'w') as file: 
+        json.dump(json_data, file)
 
-    list_result = list(result)
+    # save into json 
+    storage.blob._MAX_MULTIPART_SIZE = 5 * 1024 * 1024  # 5 MB
+    storage.blob._DEFAULT_CHUNKSIZE = 5 * 1024 * 1024  # 5 MB
+
+    client = storage.Client()
+    bucket = client.bucket(kwargs['bucket'])
+
+
+    blob = bucket.blob(str(six_mounth_ago_unix) + '.json')  # name of the object in the bucket 
+    blob.upload_from_filename(str(six_mounth_ago_unix) + '.json')
+    kwargs['ti'].xcom_push(key='json_file', value=str(six_mounth_ago_unix) + '.json')
+
+
+def pd_to_gbq(**kwargs): 
+
+    json_name = kwargs['ti'].xcom_pull(key='json_file')
+    list_result = []
+    with open(json_name, 'r') as file: 
+        json_data = json.load(file)
+        list_result = list(json_data)
+
     df = pd.DataFrame(list_result)
-    print(df.size)
-    df = df.drop(columns=['image', 'style', 'reviewText', 'summary'])
     
     df['average_overall'] = df.groupby(by='asin')['overall'] \
             .transform('mean')
@@ -52,8 +72,6 @@ def connect_to_mongo(**kwargs):
     df['latest_note'] = df.groupby('asin')['unixReviewTime'].transform('max').astype(int)
     df['oldest_note'] = df.groupby('asin')['unixReviewTime'].transform('min').astype(int)
     
-    df['latest_note'] = pd.to_datetime(df['latest_note']).dt.date
-    df['oldest_note'] = pd.to_datetime(df['oldest_note']).dt.date
 
     to_drop = [col for col in df.columns if col not in ['game_id', 'avg_note', 'user_note', 'latest_note', 'oldest_note']]
 
@@ -83,12 +101,17 @@ dag = DAG(
 
 with dag:
 
-    connect_to_mongo_task = PythonOperator(
-        task_id='connect_to_mongo',
-        dag=dag,
-        python_callable=connect_to_mongo, 
-        provide_context=True,
+    fetch_mongo_gc_storage_task = PythonOperator(
+        task_id='fetch_mongo_gcstorage_task',
+        python_callable=fetch_mongo_to_gc_storage, 
+        op_kwargs={
+            "bucket": BUCKET,
+        },
+    )
+    pd_to_gbq_task = PythonOperator(
+        task_id='pd_to_gbq_task', 
+        python_callable=pd_to_gbq,
+        provide_context=True
     )
 
-
-    connect_to_mongo_task 
+    fetch_mongo_gc_storage_task >> pd_to_gbq_task
