@@ -118,7 +118,7 @@ def fetch_mongo_to_gc_storage_fl(**kwargs):
     file_path = str(six_mounth_ago_unix) + '.json'
     print(file_path)
     with open(file_path, 'w') as file: 
-        json.dump(json_data, file)
+        file.write(json_data)
     # save into json 
     
     storage.blob._MAX_MULTIPART_SIZE = 5 * 1024 * 1024  # 5 MB
