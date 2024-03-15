@@ -62,7 +62,7 @@ def fetch_mongo_to_gc_storage(**kwargs):
     json_data = json.dumps(list(result))
 
     with open(str(six_mounth_ago_unix) + '.json', 'w') as file: 
-        json.dump(json_data, file)
+        file.write(json_data)
 
     """
     # save into json 
