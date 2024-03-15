@@ -1,6 +1,7 @@
 import os
 import json
 import tempfile
+import sys
 import pandas as pd 
 import google.auth
 import calendar
@@ -12,8 +13,8 @@ from airflow import DAG
 from google.cloud import storage
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
 from pandas_gbq import to_gbq
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
+from utils_func import load_mongo_client
+from utils_func import six_mounth_ago
 
 # Fetch the connection object by its connection ID
 
@@ -23,16 +24,18 @@ BUCKET = os.environ.get("GCP_GCS_BUCKET")
 path_to_local_home = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'datalake.video_games')
 
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
 
 def load_mongo_client() -> MongoClient:
     uri = os.getenv('AIRFLOW__DATABASE__MONGO_CONN')
     # Create a new client and connect to the server
-    client = MongoClient(uri, server_api=ServerApi('1'))
+    client = MongoClient(self.uri, server_api=ServerApi('1'))
     if client.is_mongos:
         print('Client connected to mongodb')
     return client
-
+    
 
 
 def six_month_ago(now_date):
@@ -72,8 +75,14 @@ def six_month_ago(now_date):
 
     # gerer le cas ou le jour est 31 ou 30 et n'existe pas dans le mois d'il ya 6mois
 
-    six_mounth_ago_unix = six_mounth_ago.timestamp()   
+    six_mounth_ago_unix = six_mounth_ago.timestamp() 
+      
     return six_mounth_ago_unix
+
+
+def print_py_path():
+    print(sys.path)
+
 
 def pd_df_processing(df):
 
@@ -109,7 +118,7 @@ def fetch_mongo_to_gc_storage_fl(**kwargs):
     projection = {'_id': False, 'summary': False, 'verified': False, 'reviewText': False, 'reviewTime': False }
     result = col.find({'unixReviewTime': {'$lt': int(six_mounth_ago_unix.timestamp())}}, projection)
     
-    
+    result = []
     json_data = json.dumps(list(result))
     
     # creation du fichier a partir du gc storage dans temp dir 
@@ -128,7 +137,7 @@ def fetch_mongo_to_gc_storage_fl(**kwargs):
     bucket = client.bucket(kwargs['bucket'])
 
     blob = bucket.blob(file_path)  # name of the object in the bucket 
-    blob.upload_from_filename(file_path, chunk_size=storage.blob._DEFAULT_CHUNKSIZE)
+    blob.upload_from_filename(file_path)
         
     bucket_file = kwargs['bucket']
     kwargs['ti'].xcom_push(key='bucket', value=bucket_file)
@@ -177,6 +186,11 @@ dag = DAG(
 
 with dag:
 
+    print_py_path = PythonOperator(
+        task_id = 'print_py_path',
+        python_callable=print_py_path
+    )
+
     fetch_mongo_gc_storage_task = PythonOperator(
         task_id='fetch_mongo_gcstorage_task',
         python_callable=fetch_mongo_to_gc_storage_fl, 
@@ -190,4 +204,4 @@ with dag:
         provide_context=True
     )
 
-    fetch_mongo_gc_storage_task >> pd_to_gbq_task
+    print_py_path >> fetch_mongo_gc_storage_task >> pd_to_gbq_task

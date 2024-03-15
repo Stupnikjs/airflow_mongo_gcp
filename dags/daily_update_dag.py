@@ -12,6 +12,9 @@ from first_load_dag import load_mongo_client, six_month_ago
 from google.cloud import storage
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
 from pandas_gbq import to_gbq
+from utils_func import load_mongo_client
+from utils_func import six_mounth_ago
+
 
 
 # Fetch the connection object by its connection ID
@@ -23,7 +26,64 @@ path_to_local_home = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'datalake.video_games')
 
 
-def pd_df_processing(df):
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
+
+def load_mongo_client() -> MongoClient:
+    uri = os.getenv('AIRFLOW__DATABASE__MONGO_CONN')
+    # Create a new client and connect to the server
+    client = MongoClient(self.uri, server_api=ServerApi('1'))
+    if client.is_mongos:
+        print('Client connected to mongodb')
+    return client
+    
+
+
+def six_month_ago(now_date):
+
+    curr_month = now_date.month
+    curr_day = now_date.day
+    
+    months = []
+    # decremente les 6 derniers mois et les ajoutes dans une liste 
+    for i in range(7): 
+        months.append(curr_month)
+        if curr_month != 1:
+            curr_month -= 1
+        else:
+            curr_month = 12
+
+    # liste correspondante des nombres de jours 
+    day_count = []
+    for i in months: 
+        num_days = calendar.monthrange(now_date.year, i)[1]
+        day_count.append(num_days)
+
+    # est ce que il y a six mois était l'année dernière 
+    last_year = months[0] < months[-1]
+
+
+    if last_year : 
+        if now_date.day < day_count[-1]: 
+            six_mounth_ago = datetime.datetime(now_date.year - 1, months[-1], now_date.day)
+        else:
+            six_mounth_ago = datetime.datetime(now_date.year - 1, months[-1] , day_count[-1])
+    else:
+        if now_date.day < day_count[-1]: 
+            six_mounth_ago = datetime.datetime(now_date.year, months[-1], now_date.day )
+        else:
+            six_mounth_ago = datetime.datetime(now_date.year, months[-1] , day_count[-1])
+
+    # gerer le cas ou le jour est 31 ou 30 et n'existe pas dans le mois d'il ya 6mois
+
+    six_mounth_ago_unix = six_mounth_ago.timestamp() 
+      
+    return six_mounth_ago_unix
+
+
+
+def pd_df_best_15_notes(df):
 
     df['average_overall'] = df.groupby(by='asin')['overall'] \
             .transform('mean')
@@ -33,7 +93,7 @@ def pd_df_processing(df):
     df['user_note'] = df['overall']
     df['latest_note'] = df.groupby('asin')['unixReviewTime'].transform('max').astype(int)
     df['oldest_note'] = df.groupby('asin')['unixReviewTime'].transform('min').astype(int)
-    
+    df = df.sort_values(df).head(15)    
 
     to_drop = [col for col in df.columns if col not in ['game_id', 'avg_note', 'user_note', 'latest_note', 'oldest_note']]
 
@@ -64,11 +124,11 @@ def fetch_mongo_to_gc_storage(**kwargs):
     with open(str(six_mounth_ago_unix) + '.json', 'w') as file: 
         file.write(json_data)
 
-    """
+
     # save into json 
     storage.blob._MAX_MULTIPART_SIZE = 5 * 1024 * 1024  # 5 MB
     storage.blob._DEFAULT_CHUNKSIZE = 5 * 1024 * 1024  # 5 MB
-    """
+
     
     client = storage.Client()
     bucket = client.bucket(kwargs['bucket'])
@@ -77,8 +137,6 @@ def fetch_mongo_to_gc_storage(**kwargs):
     blob = bucket.blob(str(six_mounth_ago_unix) + '.json')  # name of the object in the bucket 
     blob.upload_from_filename(str(six_mounth_ago_unix) + '.json')
     
-    print(str(six_mounth_ago_unix) + '.json')
-
     kwargs['ti'].xcom_push(key='bucket', value=kwargs['bucket'])
     kwargs['ti'].xcom_push(key='json_file', value=str(six_mounth_ago_unix) + '.json')
     
@@ -104,7 +162,6 @@ def pd_to_gbq(**kwargs):
     with open(json_name, 'r') as file: 
         json_data = json.load(file)
         list_result = list(json_data)
-        print(list_result[0])
 
     df = pd.DataFrame(list_result)
     print(df.columns)

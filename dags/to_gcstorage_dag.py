@@ -6,7 +6,8 @@ from airflow import DAG
 from first_load_dag import load_mongo_client, six_month_ago
 from google.cloud import storage
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
-
+from utils_func import load_mongo_client
+from utils_func import six_mounth_ago
 
 # Fetch the connection object by its connection ID
 

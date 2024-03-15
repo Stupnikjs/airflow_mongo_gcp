@@ -7,8 +7,8 @@ RUN apt-get update -qq && apt-get install vim -qqq
 # git gcc g++ -qqq
 
 USER airflow
-RUN pip install apache-airflow-providers-google apache-airflow-providers-mongo pymongo
- 
+RUN pip install apache-airflow-providers-google apache-airflow-providers-mongo pymongo 
+
 # Ref: https://airflow.apache.org/docs/docker-stack/recipes.html
 
 SHELL ["/bin/bash", "-o", "pipefail", "-e", "-u", "-x", "-c"]
@@ -33,6 +33,7 @@ RUN DOWNLOAD_URL="https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/goo
     && gcloud --version
 
 WORKDIR $AIRFLOW_HOME
+
 
 COPY scripts scripts
 RUN chmod +x scripts
